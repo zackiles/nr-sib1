@@ -94,13 +94,67 @@ installable package is available; see `gr-nr-sib1/README.md`.
 ## Output
 
 Events are externally tagged JSON objects. This is the verbatim output of
-`cargo run -p nr-sib1 --example decode` on the public n3 fixture, compacted to
-one event per line:
+`cargo run -p nr-sib1 --example decode` on the public n3 fixture:
 
 ```json
-{"Sync":{"pci":1,"nid1":0,"nid2":1,"sample":8399,"cfo_hz":-2834.286376953125,"ssb_hz":1876951165.713623,"quality_db":17.024930953979492,"ssb_index":0,"half_frame":false}}
-{"Mib":{"pci":1,"system_frame":896,"half_frame":false,"subcarrier_spacing_common":"Khz15","ssb_subcarrier_offset":8,"dmrs_type_a_position":2,"pdcch_config_sib1":0,"cell_barred":false,"intra_frequency_reselection":false,"ssb_index":0}}
-{"Sib1":{"pci":1,"bands":[3],"plmn":[{"mcc":"001","mnc":"01","country":null,"operator":"TEST"}],"tracking_area_code":7,"cell_identity":6576,"cell_barred":false,"downlink_bandwidth_prb":25,"tdd_pattern":null,"initial_uplink_hz":1779850000.0,"initial_uplink_bwp":{"location_and_bandwidth":6600,"subcarrier_spacing":"Khz15"},"prach":{"configuration_index":1,"message_one_fdm":1,"frequency_start":4,"root_sequence_index":1,"zero_correlation_zone":0}}}
+{
+  "Sync": {
+    "pci": 1,
+    "nid1": 0,
+    "nid2": 1,
+    "sample": 8399,
+    "cfo_hz": -2834.286376953125,
+    "ssb_hz": 1876951165.713623,
+    "quality_db": 17.024930953979492,
+    "ssb_index": 0,
+    "half_frame": false
+  }
+}
+{
+  "Mib": {
+    "pci": 1,
+    "system_frame": 896,
+    "half_frame": false,
+    "subcarrier_spacing_common": "Khz15",
+    "ssb_subcarrier_offset": 8,
+    "dmrs_type_a_position": 2,
+    "pdcch_config_sib1": 0,
+    "cell_barred": false,
+    "intra_frequency_reselection": false,
+    "ssb_index": 0
+  }
+}
+{
+  "Sib1": {
+    "pci": 1,
+    "bands": [3],
+    "plmn": [
+      {
+        "mcc": "001",
+        "mnc": "01",
+        "country": null,
+        "operator": "TEST"
+      }
+    ],
+    "tracking_area_code": 7,
+    "cell_identity": 6576,
+    "cell_barred": false,
+    "downlink_bandwidth_prb": 25,
+    "tdd_pattern": null,
+    "initial_uplink_hz": 1779850000.0,
+    "initial_uplink_bwp": {
+      "location_and_bandwidth": 6600,
+      "subcarrier_spacing": "Khz15"
+    },
+    "prach": {
+      "configuration_index": 1,
+      "message_one_fdm": 1,
+      "frequency_start": 4,
+      "root_sequence_index": 1,
+      "zero_correlation_zone": 0
+    }
+  }
+}
 ```
 
 A cell that synchronises but never reaches SIB1 emits a `Failure` instead,
