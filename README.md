@@ -124,5 +124,73 @@ are MIT. Attribution lives in `crates/nr-sib1/tests/fixtures/README.md`, the
 fixture-local READMEs and `NOTICE`. No Bell, Rogers or other live operator IQ is
 present.
 
+## Capture
+
+The decoder does not own a radio. It needs one complete window of IQ whose
+`Config` is honest about what the analog chain actually passed. `plan`, `Guard`
+and `RATES` are receiver policy for a finite direct-conversion capture, not 3GPP
+requirements: they exist so a window that found a cell can hold the control
+region it is about to read.
+
+**Recommended front end.** An FR1 receiver that can tune 410 MHz–6 GHz, sample
+at 30.72 MSps for a first look and 61.44 MSps when a 48-resource-block
+CORESET#0 will not fit, and keep its analog filter corner inside Nyquist. Twelve
+bits of conversion is enough. Hardware AGC is not: changing receiver gain inside
+a window changes the fingerprint of the transmitter, and a correlator that
+starves at too low a floor is a different failure from an overloaded chain.
+
+**What the window has to satisfy.** Feed `decode` a contiguous slice, not a
+stream. Set `usable_hz` to the passband the analog filter actually passed —
+`0.75 × sample_rate_hz` is the fraction we measured, not the whole rate. Keep
+the tuner's own frequency outside CORESET#0 by `guard.dc_hz` and each edge of
+the control region and the SS/PBCH block inside the passband by
+`guard.margin_hz`. Both default to 500 kHz and have not been measured on a
+particular leak; they are configuration, not constants. Call `plan` after a MIB
+rather than retuning toward the block: a 2 MHz offset that looks like centring
+puts DC inside a wide control region and yields cells that synchronise with no
+DCI at all.
+
+**Rate ladder.** `RATES` is 30.72 MSps (1024-point at 30 kHz, 2048-point at
+15 kHz) then 61.44 MSps (2048-point at 30 kHz, 4096-point at 15 kHz). The
+planner takes the lowest rate that leaves a feasible set. A 46.08 MSps capture
+is a valid 1536-point transform and is deliberately not on the ladder: at that
+rate a 17.28 MHz CORESET#0 fills the usable half-width exactly and the feasible
+set has width zero. The decode holds the whole window as `Complex32`, so dwell
+is bounded by a 512 MiB budget — about 2.1 s at 30.72 MSps and 1.0 s at
+61.44 MSps. A cell that synchronised but did not read wants a longer dwell at
+the same centre, not a retune, unless `plan` says the control region was never
+in the window.
+
+### What we captured with
+
+The library was built and tested against two classes of IQ. Public tests use
+only the first.
+
+The n3 fixture is a PlutoSDR / SDRangel recording by catkira of an srsRAN
+Project gNB, annotated by Daniel Estévez: `ci32_le` at **7.68 MSps**, centre
+**1.876954 GHz**, 5 MHz carrier, 15 kHz SSB, `usable_hz` 5.76 MHz. Impairment
+tests on that capture pin the envelope the decoder still reads: 9 dB below the
+noise but not 12; a 6 kHz carrier offset (half a subcarrier) but not 7.5 kHz;
+15 dB of I/Q gain imbalance but not 25; oscillator leakage 9 dB stronger than
+the wanted signal, with 12 dB defeating acquisition rather than the control
+channel's soft bits.
+
+Live licensed FR1 downlink was captured on a **Nuand bladeRF 2.0 micro**:
+70 MHz–6 GHz, 12-bit, two RX, **non-metadata SC16 Q11** on logical RX0, analog
+bandwidth set to **0.75 × sample rate**. First-look tiles ran at **30.72 MSps**
+(23.04 MHz usable). Cells whose CORESET#0 needed more than that — a 48-resource-block
+region at 30 kHz is 17.28 MHz, and several tiles needed 37.92 MHz or 52.56 MHz
+against a 23.04 or 46.08 MHz passband — were replanned at **61.44 MSps**
+(46.08 MHz usable). Gain was a bounded preflight, not hardware AGC: 0.5 s
+probes, 12 dB peak headroom, a −30 dBFS floor cap for the cellular correlator
+(the burst-detector default of −35 dBFS starves PSS/SSS), at most four probes,
+truncating toward less gain in whole dB, then held constant for the dwell. Bias
+tee was treated as a change to the gain budget, not just antenna power. A second
+look lengthened the dwell to at least 2 s without moving the tuner.
+
+Those live windows are not in this repository. They shaped `plan`, `Guard` and
+the rate ladder; the public tests assert the same arithmetic against the n3
+capture and against synthetic geometry.
+
 The library is MIT licensed. 3GPP ASN.1 and specification tables retain their
 original copyrights; see `NOTICE`.
