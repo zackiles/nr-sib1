@@ -1,0 +1,14 @@
+nr-sib1 includes generated Rust types derived from 3GPP TS 38.331 ASN.1 and
+table data transcribed from 3GPP TS 38.211, 38.212, 38.213 and 38.214.
+3GPP specifications are copyright and trademark material of their respective
+organizational partners. No endorsement by 3GPP is implied.
+
+The n3 SigMF fixture is from Daniel Estévez's "5G NR downlink" notebooks,
+licensed CC BY 4.0; the original capture was made by catkira from an srsRAN
+Project gNB.
+
+The polar vectors are from python_5gtoolbox, licensed MIT. The LDPC vectors
+were generated for this project and are distributed under MIT.
+
+The embedded E.212 operator table is lookup data, not a radio measurement.
+Operator names remain subject to change and do not imply endorsement.

@@ -1,0 +1,26 @@
+[package]
+name = "nr-sib1"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+description = "Decode SIB1 from licensed terrestrial FR1 NR IQ; excludes shared-spectrum NR, NTN, LTE, and FR2"
+keywords = ["nr", "5g", "sib1", "sdr"]
+categories = ["science"]
+
+[dependencies]
+asn1-codecs = "0.7.2"
+asn1_codecs_derive = "0.7.2"
+bitvec = "1.1.1"
+log = "0.4.34"
+num-complex.workspace = true
+rustfft = "6"
+serde.workspace = true
+thiserror = "2"
+
+[dev-dependencies]
+serde_json.workspace = true
+
+[lints]
+workspace = true

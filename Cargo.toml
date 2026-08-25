@@ -1,0 +1,35 @@
+[workspace]
+members = [
+    "crates/nr-sib1",
+    "crates/nr-sib1-futuresdr",
+    "crates/nr-sib1-ffi",
+]
+resolver = "3"
+
+[workspace.package]
+version = "0.1.0"
+edition = "2024"
+rust-version = "1.95"
+license = "MIT"
+repository = "https://github.com/zackiles/nr-sib1"
+
+[workspace.dependencies]
+nr-sib1 = { path = "crates/nr-sib1" }
+num-complex = "0.4"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+
+[workspace.lints.rust]
+unsafe_op_in_unsafe_fn = "deny"
+
+[workspace.lints.clippy]
+all = { level = "warn", priority = -1 }
+pedantic = { level = "warn", priority = -1 }
+cast_lossless = "allow"
+cast_possible_truncation = "allow"
+cast_possible_wrap = "allow"
+cast_precision_loss = "allow"
+cast_sign_loss = "allow"
+missing_errors_doc = "allow"
+missing_panics_doc = "allow"
+unused_async_trait_impl = "allow"

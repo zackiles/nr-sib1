@@ -1,0 +1,30 @@
+[package]
+name = "nr-sib1-futuresdr"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+description = "FutureSDR complete-window adapter for the nr-sib1 decoder"
+keywords = ["nr", "5g", "sib1", "sdr"]
+categories = ["science"]
+
+[features]
+default = []
+futuresdr = ["dep:futuresdr"]
+
+[dependencies]
+futuresdr = { version = "=0.8.0", default-features = false, features = ["mocker"], optional = true }
+nr-sib1.workspace = true
+num-complex.workspace = true
+serde_json.workspace = true
+
+[dev-dependencies]
+serde.workspace = true
+
+[lints]
+workspace = true
+
+[[example]]
+name = "decode_sigmf"
+required-features = ["futuresdr"]

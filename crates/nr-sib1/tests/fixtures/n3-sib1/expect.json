@@ -1,0 +1,22 @@
+{
+  "notes": "SDRangel PlutoSDR recording of a test n3 cell; the capture the decoder was built against",
+  "config": {
+    "release": "R18",
+    "band": 3,
+    "duplex": "Fdd",
+    "sample_rate_hz": 7680000.0,
+    "center_hz": 1876954000.0,
+    "usable_hz": 5760000.0,
+    "minimum_channel_bandwidth_hz": 5000000.0,
+    "spacing": "Khz15",
+    "ssb_case": "A",
+    "gscn": null,
+    "shared_spectrum": false,
+    "ntn": false,
+    "minimum_quality_db": 10.0
+  },
+  "transform": 512,
+  "from": 830000,
+  "to": 860000,
+  "cells": [{ "pci": 1, "stage": "sib1", "plmn": ["001-01"] }]
+}
