@@ -39,6 +39,8 @@ mod tests {
         Plmn {
             mcc: mcc.to_string(),
             mnc: mnc.to_string(),
+            country: None,
+            operator: None,
         }
     }
 

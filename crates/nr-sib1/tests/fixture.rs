@@ -56,6 +56,8 @@ fn annotated_capture_is_acquired_without_sample_annotations() {
     assert_eq!((sync.pci, mib.pci, sib1.pci), (1, 1, 1));
     assert_eq!(sib1.plmn[0].mcc, "001");
     assert_eq!(sib1.plmn[0].mnc, "01");
+    assert_eq!(sib1.plmn[0].operator.as_deref(), Some("TEST"));
+    assert_eq!(sib1.plmn[0].country, None);
 }
 
 #[test]

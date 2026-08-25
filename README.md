@@ -21,8 +21,9 @@ MIB, CRC-valid SIB1 and structured failure events.
 It does not claim every FR1 cell. Shared-spectrum n46/n96/n102 requires
 Tables 13-1A/13-4A and discovery-burst indexing and is explicitly refused.
 n104 is above common 6 GHz SDR front-end ceilings. NTN, LTE and FR2 are not
-decoded. Carrier names are E.212 lookups performed only after SIB1 broadcasts
-an MCC/MNC; a PCI or frequency never identifies an operator.
+decoded. The crate embeds 3,036 E.212 MCC/MNC assignments and automatically
+adds the assigned country and operator name to each PLMN returned by a
+CRC-valid SIB1. A PCI or frequency never identifies an operator.
 
 `plan`, `Guard` and `RATES` are receiver policy for finite direct-conversion
 captures. Their passband margins, DC clearance, rate ladder and memory budget
@@ -99,7 +100,7 @@ one event per line:
 ```json
 {"Sync":{"pci":1,"nid1":0,"nid2":1,"sample":8399,"cfo_hz":-2834.286376953125,"ssb_hz":1876951165.713623,"quality_db":17.024930953979492,"ssb_index":0,"half_frame":false}}
 {"Mib":{"pci":1,"system_frame":896,"half_frame":false,"subcarrier_spacing_common":"Khz15","ssb_subcarrier_offset":8,"dmrs_type_a_position":2,"pdcch_config_sib1":0,"cell_barred":false,"intra_frequency_reselection":false,"ssb_index":0}}
-{"Sib1":{"pci":1,"bands":[3],"plmn":[{"mcc":"001","mnc":"01"}],"tracking_area_code":7,"cell_identity":6576,"cell_barred":false,"downlink_bandwidth_prb":25,"tdd_pattern":null,"initial_uplink_hz":1779850000.0,"initial_uplink_bwp":{"location_and_bandwidth":6600,"subcarrier_spacing":"Khz15"},"prach":{"configuration_index":1,"message_one_fdm":1,"frequency_start":4,"root_sequence_index":1,"zero_correlation_zone":0}}}
+{"Sib1":{"pci":1,"bands":[3],"plmn":[{"mcc":"001","mnc":"01","country":null,"operator":"TEST"}],"tracking_area_code":7,"cell_identity":6576,"cell_barred":false,"downlink_bandwidth_prb":25,"tdd_pattern":null,"initial_uplink_hz":1779850000.0,"initial_uplink_bwp":{"location_and_bandwidth":6600,"subcarrier_spacing":"Khz15"},"prach":{"configuration_index":1,"message_one_fdm":1,"frequency_start":4,"root_sequence_index":1,"zero_correlation_zone":0}}}
 ```
 
 A cell that synchronises but never reaches SIB1 emits a `Failure` instead,

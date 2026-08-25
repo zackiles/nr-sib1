@@ -7,7 +7,7 @@ use crate::nr_rrc::{
     BCCH_DL_SCH_Message, BCCH_DL_SCH_MessageType, BCCH_DL_SCH_MessageType_c1,
     BWP_UplinkCommonRach_ConfigCommon, RACH_ConfigCommonPrach_RootSequenceIndex,
 };
-use crate::{Bwp, Plmn, Prach, Sib1, SubcarrierSpacing};
+use crate::{Bwp, Plmn, Prach, Sib1, SubcarrierSpacing, operator};
 
 #[must_use]
 pub fn decode(input: &[u8], pci: u16, cell_barred: bool) -> Option<Sib1> {
@@ -23,12 +23,21 @@ pub fn decode(input: &[u8], pci: u16, cell_barred: bool) -> Option<Sib1> {
     let plmn = identities
         .iter()
         .flat_map(|info| &info.plmn_identity_list.0)
-        .map(|identity| Plmn {
-            mcc: identity
-                .mcc
-                .as_ref()
-                .map_or_else(String::new, |mcc| digits(&mcc.0)),
-            mnc: digits(&identity.mnc.0),
+        .map(|identity| {
+            let mut plmn = Plmn {
+                mcc: identity
+                    .mcc
+                    .as_ref()
+                    .map_or_else(String::new, |mcc| digits(&mcc.0)),
+                mnc: digits(&identity.mnc.0),
+                country: None,
+                operator: None,
+            };
+            if let Some(entry) = operator(&plmn) {
+                plmn.country = entry.country.map(str::to_string);
+                plmn.operator = Some(entry.name.to_string());
+            }
+            plmn
         })
         .collect();
     let serving = sib1.serving_cell_config_common?;

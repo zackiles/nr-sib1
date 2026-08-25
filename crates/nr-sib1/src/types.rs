@@ -123,6 +123,10 @@ pub struct Mib {
 pub struct Plmn {
     pub mcc: String,
     pub mnc: String,
+    #[serde(default)]
+    pub country: Option<String>,
+    #[serde(default)]
+    pub operator: Option<String>,
 }
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
