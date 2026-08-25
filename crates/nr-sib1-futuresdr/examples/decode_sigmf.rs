@@ -15,11 +15,15 @@ impl Print {
     #[allow(clippy::unused_async)]
     async fn events(
         &mut self,
-        _io: &mut WorkIo,
+        io: &mut WorkIo,
         _messages: &mut MessageOutputs,
         _meta: &BlockMeta,
         message: Pmt,
     ) -> Result<Pmt> {
+        if matches!(message, Pmt::Finished) {
+            io.finished = true;
+            return Ok(Pmt::Ok);
+        }
         if let Pmt::Any(value) = message
             && let Some(event) = value.downcast_ref::<Event>()
         {

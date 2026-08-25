@@ -56,13 +56,15 @@ port. The default window is unbounded; `Decoder::with_limit` makes the memory
 limit explicit and reports overflow instead of silently truncating.
 
 ```sh
-cargo +nightly run -p nr-sib1-futuresdr --features futuresdr --example decode_sigmf
+cargo +nightly-2026-08-15 run -p nr-sib1-futuresdr --features futuresdr --example decode_sigmf
 ```
 
-The workspace toolchain remains stable. FutureSDR 0.8.0 itself enables
-Rust's still-unstable `return_type_notation`, so this adapter is behind the
-`futuresdr` feature and checked in a separate nightly CI job. Core and FFI do
-not inherit that toolchain constraint.
+The workspace toolchain stays stable and the core and FFI crates build on it.
+FutureSDR 0.8.0 and futuredsp 0.8.0 need unstable features, so this adapter is
+behind the `futuresdr` feature and built by a pinned-nightly CI job. The pin is
+deliberate: those features move under a floating `nightly`, and when they do it
+fails as dozens of errors inside a dependency rather than as anything
+recognisable.
 
 ### C, C++ and GNU Radio 4
 
@@ -112,7 +114,7 @@ cargo fmt --all --check
 cargo check --workspace --all-targets
 cargo test -p nr-sib1 -p nr-sib1-ffi
 cargo clippy --workspace --all-targets -- -D warnings
-cargo +nightly test -p nr-sib1-futuresdr --features futuresdr
+cargo +nightly-2026-08-15 test -p nr-sib1-futuresdr --features futuresdr
 ```
 
 Fixture and impairment tests use only the public n3 srsRAN capture. The n3

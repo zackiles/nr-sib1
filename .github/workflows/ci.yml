@@ -8,7 +8,7 @@ jobs:
   rust:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - uses: dtolnay/rust-toolchain@stable
         with:
           components: clippy,rustfmt
@@ -18,12 +18,23 @@ jobs:
       - run: cargo clippy --workspace --all-targets -- -D warnings
       - run: cargo build --release -p nr-sib1-ffi
 
+  # FutureSDR 0.8.0 and futuredsp 0.8.0 need unstable features, so this adapter cannot build on the
+  # workspace's stable toolchain. The nightly is pinned rather than floating because those features
+  # move underneath it: a later nightly stopped gating `float_algebraic` the way futuredsp declares
+  # it, which fails as 40 errors inside a dependency and looks nothing like a toolchain mismatch.
+  #
+  # RUSTUP_TOOLCHAIN is what makes the pin take effect. Installing a toolchain does not select it
+  # while rust-toolchain.toml names stable, so this job silently ran stable and reported the same
+  # dependency errors.
   futuresdr:
     runs-on: ubuntu-latest
+    env:
+      RUSTUP_TOOLCHAIN: nightly-2026-08-15
     steps:
-      - uses: actions/checkout@v4
-      - uses: dtolnay/rust-toolchain@nightly
+      - uses: actions/checkout@v5
+      - uses: dtolnay/rust-toolchain@master
         with:
+          toolchain: nightly-2026-08-15
           components: clippy
       - run: cargo check -p nr-sib1-futuresdr --features futuresdr --all-targets
       - run: cargo test -p nr-sib1-futuresdr --features futuresdr
